@@ -111,8 +111,14 @@ static void Sha256_Transform(uint32_t *state, const uint32_t *data)
   h = state[7];
   #else
   uint32_t T[8];
-  for (j = 0; j < 8; j++)
-    T[j] = state[j];
+T[0] = state[0];
+T[1] = state[1];
+T[2] = state[2];
+T[3] = state[3];
+T[4] = state[4];
+T[5] = state[5];
+T[6] = state[6];
+T[7] = state[7];
   #endif
 
   for (j = 0; j < 64; j += 16)
@@ -120,8 +126,24 @@ static void Sha256_Transform(uint32_t *state, const uint32_t *data)
     #if defined(_SHA256_UNROLL) || defined(_SHA256_UNROLL2)
     RX_8(0); RX_8(8);
     #else
-    unsigned i;
-    for (i = 0; i < 16; i++) { R(i); }
+
+	R(0);
+        R(1);
+        R(2);
+        R(3);
+        R(4);
+        R(5);
+        R(6);
+        R(7);
+        R(8);
+        R(9);
+        R(10);
+        R(11);
+        R(12);
+        R(13);
+        R(14);
+        R(15);
+
     #endif
   }
 
