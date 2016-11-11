@@ -705,8 +705,11 @@ void potential_sol(__global char **htabs, __global sols_t *sols,
     sol_i = atomic_inc(&sols->nr);
     if (sol_i >= MAX_SOLS)
 	return ;
-    for (i = 0; i < (1 << PARAM_K); i++)
+    for (i = 0; i < (1 << PARAM_K); i+=2){
 	sols->values[sol_i][i] = values_tmp[i];
+	sols->values[sol_i][i+1] = values_tmp[i+1];
+    }
+
     sols->valid[sol_i] = 1;
 }
 
