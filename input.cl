@@ -378,7 +378,8 @@ void kernel_round0(__global ulong *blake_state, __global char *ht,
 #define ENCODE_INPUTS(row, slot0, slot1) \
     ((row << 16) | ((slot1 & 0xff) << 8) | (slot0 & 0xff))
 #define DECODE_ROW(REF)		(REF >> 16)
-#define DECODE_SLOT1(REF)	((REF >> 8) & 0xff)
+#define DECODE_SLOT1(REF) ((REF >> 6) & 0x3f) 
+#define DECODE_SLOT1(REF) amd_bfe((uint)REF, 6U, 6U) g
 #define DECODE_SLOT0(REF)	(REF & 0xff)
 
 #elif NR_ROWS_LOG == 18 && NR_SLOTS <= (1 << 7)
@@ -386,7 +387,8 @@ void kernel_round0(__global ulong *blake_state, __global char *ht,
 #define ENCODE_INPUTS(row, slot0, slot1) \
     ((row << 14) | ((slot1 & 0x7f) << 7) | (slot0 & 0x7f))
 #define DECODE_ROW(REF)		(REF >> 14)
-#define DECODE_SLOT1(REF)	((REF >> 7) & 0x7f)
+#define DECODE_SLOT1(REF) ((REF >> 6) & 0x3f) 
+#define DECODE_SLOT1(REF) amd_bfe((uint)REF, 6U, 6U)
 #define DECODE_SLOT0(REF)	(REF & 0x7f)
 
 #elif NR_ROWS_LOG == 19 && NR_SLOTS <= (1 << 6)
@@ -394,7 +396,8 @@ void kernel_round0(__global ulong *blake_state, __global char *ht,
 #define ENCODE_INPUTS(row, slot0, slot1) \
     ((row << 13) | ((slot1 & 0x3f) << 6) | (slot0 & 0x3f)) /* 1 spare bit */
 #define DECODE_ROW(REF)		(REF >> 13)
-#define DECODE_SLOT1(REF)	((REF >> 6) & 0x3f)
+#define DECODE_SLOT1(REF) ((REF >> 6) & 0x3f) 
+#define DECODE_SLOT1(REF) amd_bfe((uint)REF, 6U, 6U)
 #define DECODE_SLOT0(REF)	(REF & 0x3f)
 
 #elif NR_ROWS_LOG == 20 && NR_SLOTS <= (1 << 6)
@@ -402,7 +405,8 @@ void kernel_round0(__global ulong *blake_state, __global char *ht,
 #define ENCODE_INPUTS(row, slot0, slot1) \
     ((row << 12) | ((slot1 & 0x3f) << 6) | (slot0 & 0x3f))
 #define DECODE_ROW(REF)		(REF >> 12)
-#define DECODE_SLOT1(REF)	((REF >> 6) & 0x3f)
+#define DECODE_SLOT1(REF) ((REF >> 6) & 0x3f) 
+#define DECODE_SLOT1(REF) amd_bfe((uint)REF, 6U, 6U)
 #define DECODE_SLOT0(REF)	(REF & 0x3f)
 
 #else
