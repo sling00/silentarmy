@@ -157,8 +157,14 @@ T[7] = state[7];
   state[6] += g;
   state[7] += h;
   #else
-  for (j = 0; j < 8; j++)
-    state[j] += T[j];
+    state[0] += T[0];
+    state[1] += T[1];
+    state[2] += T[2];
+    state[3] += T[3];
+    state[4] += T[4];
+    state[5] += T[5];
+    state[6] += T[6];
+    state[7] += T[7];
   #endif
   
   /* Wipe variables */
