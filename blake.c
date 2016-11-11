@@ -37,8 +37,11 @@ void zcash_blake2b_init(blake2b_state_t *st, uint8_t hash_len,
     assert(n > k);
     assert(hash_len <= 64);
     st->h[0] = blake2b_iv[0] ^ (0x01010000 | hash_len);
-    for (uint32_t i = 1; i <= 5; i++)
-        st->h[i] = blake2b_iv[i];
+        st->h[1] = blake2b_iv[1];
+	st->h[2] = blake2b_iv[2];
+	st->h[3] = blake2b_iv[3];
+	st->h[4] = blake2b_iv[4];
+	st->h[5] = blake2b_iv[5];
     st->h[6] = blake2b_iv[6] ^ *(uint64_t *)"ZcashPoW";
     st->h[7] = blake2b_iv[7] ^ (((uint64_t)k << 32) | n);
     st->bytes = 0;
@@ -93,8 +96,14 @@ void zcash_blake2b_update(blake2b_state_t *st, const uint8_t *_msg,
         mix(v + 2, v + 7, v + 8,  v + 13, m[s[12]], m[s[13]]);
         mix(v + 3, v + 4, v + 9,  v + 14, m[s[14]], m[s[15]]);
       }
-    for (uint32_t i = 0; i < 8; i++)
-        st->h[i] ^= v[i] ^ v[i + 8];
+        st->h[0] ^= v[0] ^ v[8];
+	st->h[1] ^= v[1] ^ v[9];
+	st->h[2] ^= v[2] ^ v[10];
+	st->h[3] ^= v[3] ^ v[11];
+	st->h[4] ^= v[4] ^ v[12];
+	st->h[5] ^= v[5] ^ v[13];
+	st->h[6] ^= v[6] ^ v[14];
+	st->h[7] ^= v[7] ^ v[15];
 }
 
 void zcash_blake2b_final(blake2b_state_t *st, uint8_t *out, uint8_t outlen)
