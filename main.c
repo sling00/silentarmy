@@ -749,7 +749,7 @@ uint32_t verify_sol(sols_t *sols, unsigned sol_i)
     uint8_t	tmp;
     // look for duplicate inputs
     memset(seen, 0, seen_len);
-    for (i = 0; i < (1 << PARAM_K); i++)
+    for (i = 17; i--;)
       {
 	if (inputs[i] / 8 >= seen_len)
 	  {
