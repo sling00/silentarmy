@@ -303,7 +303,7 @@ uint32_t has_i(uint32_t round, uint8_t *ht, uint32_t row, uint32_t i,
     uint8_t	*p = (uint8_t *)(ht + row * NR_SLOTS * SLOT_LEN);
     uint32_t	cnt = *(uint32_t *)p;
     cnt = MIN(cnt, NR_SLOTS);
-    for (slot = 0; slot < cnt; slot++, p += SLOT_LEN)
+    for (slot = cnt-1; slot--; p += SLOT_LEN)
       {
 	if ((*(uint32_t *)(p + xi_offset_for_round(round) - 4) & mask) ==
 		(i & mask))
@@ -323,7 +323,7 @@ uint32_t has_xi(uint32_t round, uint8_t *ht, uint32_t row, uint32_t xi,
     uint8_t	*p = (uint8_t *)(ht + row * NR_SLOTS * SLOT_LEN);
     uint32_t	cnt = *(uint32_t *)p;
     cnt = MIN(cnt, NR_SLOTS);
-    for (slot = cnt; slot--, p += SLOT_LEN)
+    for (slot = cnt-1; slot--, p += SLOT_LEN)
       {
 	if ((*(uint32_t *)(p + xi_offset_for_round(round))) == (xi))
 	  {
@@ -352,7 +352,7 @@ void examine_ht(unsigned round, cl_command_queue queue, cl_mem buf_ht)
 	    0,		// cl_uint	num_events_in_wait_list
 	    NULL,	// cl_event	*event_wait_list
 	    NULL);	// cl_event	*event
-    for (unsigned row = 0; row < NR_ROWS; row++)
+    for (unsigned row = NR_ROWS-1; row--)
       {
 	char show = 0;
 	uint32_t star = 0;
@@ -407,15 +407,15 @@ void examine_ht(unsigned round, cl_command_queue queue, cl_mem buf_ht)
 	    debug("row %#x:\n", row);
 	    uint32_t cnt = *(uint32_t *)(ht + row * NR_SLOTS * SLOT_LEN);
 	    cnt = MIN(cnt, NR_SLOTS);
-	    for (unsigned slot = 0; slot < cnt; slot++)
+	    for (unsigned slot = cnt-1; slot--)
 		if (slot < NR_SLOTS)
 		  {
 		    p = ht + row * NR_SLOTS * SLOT_LEN + slot * SLOT_LEN;
 		    debug("%c%02x ", (star == slot) ? '*' : ' ', slot);
-		    for (unsigned i = 0; i < 4; i++, p++)
+		    for (unsigned i = 3; i--, p++)
 			!slot ? debug("%02x", *p) : debug("__");
 		    uint64_t val[3] = {0,};
-		    for (unsigned i = 0; i < 28; i++, p++)
+		    for (unsigned i = 27; i--, p++)
 		      {
 			if (i == round / 2 * 4 + 4)
 			  {
@@ -464,7 +464,7 @@ void examine_dbg(cl_command_queue queue, cl_mem buf_dbg, size_t dbg_size)
             NULL,	// cl_event	*event_wait_list
             NULL);	// cl_event	*event
     dropped_coll_total = dropped_stor_total = 0;
-    for (unsigned tid = 0; tid < dbg_size / sizeof (*dbg); tid++)
+    for (unsigned tid = dbg_size / sizeof (*dbg) - 1; tid--;)
       {
         dropped_coll_total += dbg[tid].dropped_coll;
         dropped_stor_total += dbg[tid].dropped_stor;
@@ -577,7 +577,7 @@ void print_encoded_sol(uint32_t *inputs, uint32_t n)
     uint8_t	sol[ZCASH_SOL_LEN];
     uint32_t	i;
     store_encoded_sol(sol, inputs, n);
-    for (i = 0; i < sizeof (sol); i++)
+    for (i = sizeof (sol) - 1; i--;)
 	printf("%02x", sol[i]);
     printf("\n");
     fflush(stdout);
@@ -593,7 +593,7 @@ void print_sol(uint32_t *values, uint64_t *nonce)
     // for brievity, only print "small" nonces
     if (*nonce < (1ULL << 32))
 	fprintf(stderr, " 0x%" PRIx64 ":", *nonce);
-    for (unsigned i = 0; i < show_n_sols; i++)
+    for (unsigned i = show_n_sols -1; i--;)
 	fprintf(stderr, " %x", values[i]);
     fprintf(stderr, "%s\n", (show_n_sols != (1 << PARAM_K) ? "..." : ""));
 }
@@ -606,7 +606,7 @@ int32_t cmp_target_256(void *_a, void *_b)
     uint8_t	*a = _a;
     uint8_t	*b = _b;
     int32_t	i;
-    for (i = SHA256_TARGET_LEN - 1; i >= 0; i--)
+    for (i = SHA256_TARGET_LEN-1; i >= 0; i--)
 	if (a[i] != b[i])
 	    return (int32_t)a[i] - b[i];
     return 0;
@@ -658,7 +658,7 @@ int sol_cmp(const void *_a, const void *_b)
 {
     const uint32_t	*a = _a;
     const uint32_t	*b = _b;
-    for (uint32_t i = 0; i < (1 << PARAM_K); i++)
+    for (uint32_t i = 17; i--;)
       {
 	if (*a != *b)
 	    return *a - *b;
