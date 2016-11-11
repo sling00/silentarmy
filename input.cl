@@ -127,50 +127,9 @@ uint ht_store(uint round, __global char *ht, uint i,
     p += cnt * SLOT_LEN + xi_offset_for_round(round);
     // store "i" (always 4 bytes before Xi)
     *(__global uint *)(p - 4) = i;
-    if (round == 0 || round == 1)
-      {
-	// store 24 bytes
-	*(__global ulong *)(p + 0) = xi0;
-	*(__global ulong *)(p + 8) = xi1;
-	*(__global ulong *)(p + 16) = xi2;
-      }
-    else if (round == 2)
-      {
-	// store 20 bytes
-	*(__global uint *)(p + 0) = xi0;
-	*(__global ulong *)(p + 4) = (xi0 >> 32) | (xi1 << 32);
-	*(__global ulong *)(p + 12) = (xi1 >> 32) | (xi2 << 32);
-      }
-    else if (round == 3)
-      {
-	// store 16 bytes
-	*(__global uint *)(p + 0) = xi0;
-	*(__global ulong *)(p + 4) = (xi0 >> 32) | (xi1 << 32);
-	*(__global uint *)(p + 12) = (xi1 >> 32);
-      }
-    else if (round == 4)
-      {
-	// store 16 bytes
-	*(__global ulong *)(p + 0) = xi0;
-	*(__global ulong *)(p + 8) = xi1;
-      }
-    else if (round == 5)
-      {
-	// store 12 bytes
-	*(__global ulong *)(p + 0) = xi0;
-	*(__global uint *)(p + 8) = xi1;
-      }
-    else if (round == 6 || round == 7)
-      {
-	// store 8 bytes
-	*(__global uint *)(p + 0) = xi0;
-	*(__global uint *)(p + 4) = (xi0 >> 32);
-      }
-    else if (round == 8)
-      {
-	// store 4 bytes
-	*(__global uint *)(p + 0) = xi0;
-      }
+    ((__global ulong *)(p))[0] = ((round < 8) ? xi0 : (((__global ulong *)(p))[0] & 0xFFFFFFFF00000000UL) | ((uint)xi0));
+    ((__global ulong *)(p + 8))[0] = ((round < 5) ? xi1 : ((round == 5) ? ((((__global ulong *)(p + 8))[0] & 0xFFFFFFFF00000000UL) | ((uint)xi1)) : ((__global ulong *)(p + 8))[0]));
+    ((__global ulong *)(p + 16))[0] = ((round < 2) ? xi2 : ((round == 2) ? ((((__global ulong *)(p + 16))[0] & 0xFFFFFFFF00000000UL) | ((uint)xi2)) : ((__global ulong *)(p + 16))[0]));
     return 0;
 }
 
