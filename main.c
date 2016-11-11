@@ -323,7 +323,7 @@ uint32_t has_xi(uint32_t round, uint8_t *ht, uint32_t row, uint32_t xi,
     uint8_t	*p = (uint8_t *)(ht + row * NR_SLOTS * SLOT_LEN);
     uint32_t	cnt = *(uint32_t *)p;
     cnt = MIN(cnt, NR_SLOTS);
-    for (slot = 0; slot < cnt; slot++, p += SLOT_LEN)
+    for (slot = cnt; slot--, p += SLOT_LEN)
       {
 	if ((*(uint32_t *)(p + xi_offset_for_round(round))) == (xi))
 	  {
